@@ -1,0 +1,95 @@
+import { VerticalBox, ListView, Button, HorizontalBox, } from "std-widgets.slint";
+
+//列表行结构
+struct ListItem {
+    id: int,
+    website: string,
+    account: string,
+    email: string,
+    phone: string,
+    password: string,
+}
+
+//表内文本框
+component TableText inherits Text {
+    vertical-alignment: center;
+    height: 30px;
+    font-size: 15px;
+}
+
+//表头
+component TableHead inherits Rectangle {
+    //表头字体颜色
+    in property <brush> tableHeadTextColor;
+
+    width: 100%;
+    height: 50px;
+    background: #323133;
+    tableHeadTextColor: white;
+     
+    HorizontalBox {
+        TableText { width:  40px; text: "序号"; color: tableHeadTextColor; }
+        TableText { width: 300px; text: "网址"; color: tableHeadTextColor; }
+        TableText { width: 150px; text: "账号"; color: tableHeadTextColor; }
+        TableText { width: 250px; text: "邮箱"; color: tableHeadTextColor; }
+        TableText { width: 100px; text: "手机号"; color: tableHeadTextColor; } 
+        TableText { width: 200px; text: "密码"; color: tableHeadTextColor; }
+        TableText { width: 100px; text: "操作"; color: tableHeadTextColor; horizontal-alignment: center; }
+    }
+}
+
+//表体
+component TableBody inherits Rectangle {
+    in property <ListItem> itemData;
+    in property <brush> backgroundColor;
+
+    width: 100%;
+    height: 40px;
+    background: backgroundColor;
+    
+    HorizontalBox {
+        TableText { width: 40px; text: itemData.id; }
+        TableText { width: 300px; text: itemData.website; }
+        TableText { width: 150px; text: itemData.account; }
+        TableText { width: 250px; text: itemData.email; }
+        TableText { width: 100px; text: itemData.phone; }
+        TableText { width: 200px; text: itemData.password; }
+        HorizontalLayout {
+            width: 100px;
+            height: 30px;
+            alignment: center;
+            spacing: 10px;
+
+            Button { text: "编辑"; }
+            Button { text: "删除"; }
+        } 
+    } 
+}
+
+//表格内容
+export component MainWindowContent inherits VerticalBox {
+    in property <bool> mainWindowContentVisible;
+
+    width: 95%;
+    height: 95%;
+    visible: mainWindowContentVisible;
+
+    //表格数据
+    in-out property <[ListItem]> ListData: [
+        { id: 1, website: "https://www.baidu.com", account: "妖刀", email: "123@123.com", phone: "12344444444", password: "fldsjafklsda", operation: true },
+        { id: 2, website: "https://www.jd.com", account: "zhang", email: "234.123.com", phone: "1234444444", password: "jfldsjaflsda", operation: true },
+        { id: 3, website: "https://www.taobao.com", account: "w2ang", email: "345@123.com", phone: "123444444", password: "fldsjafldsa", operation: true },
+        { id: 4, website: "https://www.rust.rs", account: "zyseee", email: "4566@123.com", phone: "123444444", password: "fldjsafklsda", operation: true },
+        { id: 5, website: "https://www.zhihu.com", account: "iiiiikji", email: "567@123.com", phone: "123444444", password: "fjdlsjafldsa", operation: true },
+        { id: 6, website: "https://www.bilibili.com", account: "konng", email: "678@123.com", phone: "32133321321", password: "fdklsjafdlsa", operation: true },
+    ];
+
+    TableHead {}
+
+    ListView {
+        for item[i] in ListData : TableBody {
+            itemData: item;
+            backgroundColor: 0 == mod(i, 2) ? #CCD1D9 : #AAB2BD;
+        }
+    }
+}

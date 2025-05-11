@@ -1,0 +1,69 @@
+import { VerticalBox, Button } from "std-widgets.slint";
+
+component LoginInput inherits Rectangle {
+    width: 200px;
+    height: 40px;
+    background: white;
+    border-radius: 10px;
+    clip: true;
+
+    TextInput {
+        width: 180px;
+        height: 30px;
+        x: 20px;
+        y: 8px;
+        z: 20;
+
+        color: black;
+        font-size: 20px; 
+        wrap: no-wrap;
+    } 
+}
+
+component LoginLogo inherits Rectangle {
+    width: 200px;
+    height: 100px;
+
+    Image {
+        width: 100px;
+        height: 100px;
+        source: @image-url("icons/tile_logo.png");
+    }
+}
+
+//登录窗口
+export component LoginWindowContent inherits VerticalBox {
+    in property <bool> loginWindowContentVisible;
+
+    visible: loginWindowContentVisible;
+    width: 100%;
+    height: 100%;
+
+    padding-left: 50px;
+    alignment: center;
+    spacing: 40px;
+
+    callback login_btn_clicked();
+
+    LoginLogo {}
+
+    LoginInput {}
+
+    Button {
+        width: 200px;
+        height: 40px;
+        text: "登录";
+        primary: true;
+        clicked => {
+            debug("登录");
+            parent.login_btn_clicked();
+        }
+    }
+
+    /*login_box_state => {
+        root.login_box_visible = false;
+        root.main_box_visible = true;
+        root.window_init_width = 1400px;
+        root.window_init_height = 800px;
+    }*/
+}

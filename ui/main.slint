@@ -1,0 +1,38 @@
+import { Button, TextEdit, VerticalBox, GridBox, StandardTableView, ListView } from "std-widgets.slint";
+import { MainWindowContent } from "content.slint";
+import { LoginWindowContent } from "login.slint";
+
+export component MainWindow inherits Window {
+    in-out property <length> windowWidth: 300px;
+    in-out property <length> windowHeight: 400px;
+
+    in-out property <bool> loginWindowContentVisible: true;
+    in-out property <bool> mainWindowContentVisible: false;
+
+
+    width: windowWidth;
+    height: windowHeight;
+    background:#e3f2fd;
+    
+    //登录窗口
+    LoginWindowContent {
+        loginWindowContentVisible: loginWindowContentVisible;
+
+        //点击登录按钮
+        login_btn_clicked => {
+            //登录窗口隐藏
+            root.loginWindowContentVisible = false;
+            //主窗口显示
+            root.mainWindowContentVisible = true;
+
+            //重设窗口宽高
+            root.windowWidth = 1400px;
+            root.windowHeight = 800px;
+        }
+    }
+
+    //主窗口
+    MainWindowContent {
+        mainWindowContentVisible: mainWindowContentVisible;
+    }
+}
