@@ -33,17 +33,15 @@ component LoginLogo inherits Rectangle {
 
 //登录窗口
 export component LoginWindowContent inherits VerticalBox {
-    in property <bool> loginWindowContentVisible;
-
-    visible: loginWindowContentVisible;
     width: 100%;
     height: 100%;
+    visible: true;
 
     padding-left: 50px;
     alignment: center;
     spacing: 40px;
 
-    callback login_btn_clicked();
+    callback loginBtnClicked();
 
     LoginLogo {}
 
@@ -56,14 +54,8 @@ export component LoginWindowContent inherits VerticalBox {
         primary: true;
         clicked => {
             debug("登录");
-            parent.login_btn_clicked();
+            root.visible = false;
+            loginBtnClicked();
         }
     }
-
-    /*login_box_state => {
-        root.login_box_visible = false;
-        root.main_box_visible = true;
-        root.window_init_width = 1400px;
-        root.window_init_height = 800px;
-    }*/
 }

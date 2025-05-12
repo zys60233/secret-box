@@ -1,27 +1,39 @@
-import { Button, TextEdit, VerticalBox, GridBox, StandardTableView, ListView } from "std-widgets.slint";
+import { Button } from "std-widgets.slint";
 import { MainWindowContent } from "content.slint";
 import { LoginWindowContent } from "login.slint";
+import { CreateWindowContent } from "create.slint";
+import { EditWindowContent } from "edit.slint";
 
 export component MainWindow inherits Window {
     in-out property <length> windowWidth: 300px;
     in-out property <length> windowHeight: 400px;
 
-    in-out property <bool> loginWindowContentVisible: true;
-    in-out property <bool> mainWindowContentVisible: false;
+    in-out property <bool> mainWindowContentVisible: false; 
 
 
     width: windowWidth;
     height: windowHeight;
     background:#e3f2fd;
-    
+
+    //菜单
+    callback createRecord();
+    callback setting();
+    MenuBar {
+        Menu {
+            title: @tr("新建");
+            MenuItem { title: "新建"; activated => { createRecord() } }
+        }
+
+        Menu {
+            title: @tr("设置");
+            MenuItem { title: @tr("设置"); activated => { setting() } }
+        }
+    }
+
     //登录窗口
     LoginWindowContent {
-        loginWindowContentVisible: loginWindowContentVisible;
-
         //点击登录按钮
-        login_btn_clicked => {
-            //登录窗口隐藏
-            root.loginWindowContentVisible = false;
+        loginBtnClicked => {
             //主窗口显示
             root.mainWindowContentVisible = true;
 
@@ -29,10 +41,18 @@ export component MainWindow inherits Window {
             root.windowWidth = 1400px;
             root.windowHeight = 800px;
         }
-    }
+    } 
 
     //主窗口
-    MainWindowContent {
+    mianWindowHandler := MainWindowContent {
         mainWindowContentVisible: mainWindowContentVisible;
     }
+    
+    //创建窗口
+    createWindowHandler := CreateWindowContent {} 
+    createRecord => { createWindowHandler.visible = true; }
+
+    //编辑窗口
+    editWindowHandler := EditWindowContent {}
+
 }
