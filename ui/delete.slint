@@ -1,0 +1,48 @@
+import { VerticalBox, Button, HorizontalBox } from "std-widgets.slint";
+export component DeleteWindowContent inherits Rectangle {
+    //删除
+    visible: false;
+    width: 300px;
+    height: 200px;
+    z: 20;
+    background: white;
+    border-radius: 10px;
+
+    callback close();
+
+    VerticalBox {
+        alignment: center;
+        spacing: 40px;
+        Text { 
+            width: 100%;
+            text: "是否删除该条数据？"; 
+            font-size: 20px; 
+            color: #323133; 
+            horizontal-alignment: center; 
+        }
+        HorizontalBox {
+            alignment: center;
+            spacing: 20px;
+
+            Button { 
+                text: "确认"; 
+                primary: true; 
+                width: 100px;
+                height: 40px;
+                clicked => {
+                    root.close();
+                } 
+            }
+
+            Button { 
+                text: "取消"; 
+                primary: false; 
+                width: 100px;
+                height: 40px;
+                clicked => {
+                    root.close();
+                } 
+            }
+        }
+    } 
+}

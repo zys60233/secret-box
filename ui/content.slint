@@ -29,7 +29,7 @@ component TableHead inherits Rectangle {
      
     HorizontalBox {
         TableText { width:  40px; text: "序号"; color: tableHeadTextColor; }
-        TableText { width: 300px; text: "网址"; color: tableHeadTextColor; }
+        TableText { width: 400px; text: "网址"; color: tableHeadTextColor; }
         TableText { width: 150px; text: "账号"; color: tableHeadTextColor; }
         TableText { width: 250px; text: "邮箱"; color: tableHeadTextColor; }
         TableText { width: 100px; text: "手机号"; color: tableHeadTextColor; } 
@@ -46,10 +46,16 @@ component TableBody inherits Rectangle {
     width: 100%;
     height: 40px;
     background: backgroundColor;
+
+    //编辑
+    callback edit();
+
+    //删除
+    callback delete();
     
     HorizontalBox {
         TableText { width: 40px; text: itemData.id; }
-        TableText { width: 300px; text: itemData.website; }
+        TableText { width: 400px; text: itemData.website; }
         TableText { width: 150px; text: itemData.account; }
         TableText { width: 250px; text: itemData.email; }
         TableText { width: 100px; text: itemData.phone; }
@@ -60,19 +66,17 @@ component TableBody inherits Rectangle {
             alignment: center;
             spacing: 10px;
 
-            Button { text: "编辑"; }
-            Button { text: "删除"; }
+            Button { text: "编辑";  clicked => { root.edit() } }
+            Button { text: "删除";  clicked => { root.delete() } }
         } 
     } 
 }
 
 //表格内容
 export component MainWindowContent inherits VerticalBox {
-    in property <bool> mainWindowContentVisible;
-
     width: 95%;
     height: 95%;
-    visible: mainWindowContentVisible;
+    visible: true;
 
     //表格数据
     in-out property <[ListItem]> ListData: [
@@ -84,12 +88,28 @@ export component MainWindowContent inherits VerticalBox {
         { id: 6, website: "https://www.bilibili.com", account: "konng", email: "678@123.com", phone: "32133321321", password: "fdklsjafdlsa", operation: true },
     ];
 
+    //编辑
+    callback edit();
+
+    //删除
+    callback delete();
+
     TableHead {}
 
     ListView {
         for item[i] in ListData : TableBody {
             itemData: item;
             backgroundColor: 0 == mod(i, 2) ? #CCD1D9 : #AAB2BD;
+
+            //点击编辑按钮
+            edit => {
+                root.edit();
+            }
+
+            //点击删除按钮
+            delete => {
+                root.delete();
+            }
         }
     }
 }

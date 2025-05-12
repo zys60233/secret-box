@@ -1,35 +1,33 @@
 import { LineEdit, Button, VerticalBox } from "std-widgets.slint";
-export component EditWindowContent inherits Dialog {
+export component EditWindowContent inherits Rectangle {
+    //创建
+    visible: false;
     width: 300px;
     height: 400px;
-    z: 100;
-    title: "编辑";
-    visible: false;
+    z: 20;
+    background: white;
+    border-radius: 10px;
 
-    Rectangle {
-        width: 100%;
-        height: 100%;
-        background: green;
+    callback close();
 
-        VerticalBox {
-            width: 250px;
-            alignment: center;
-            spacing: 10px;
+    VerticalBox {
+        width: 250px;
+        alignment: center;
+        spacing: 20px;
 
-            LineEdit { height: 40px; placeholder-text: "网址"; }
-            LineEdit { height: 40px; placeholder-text: "账号"; }
-            LineEdit { height: 40px; placeholder-text: "邮箱"; }
-            LineEdit { height: 40px; placeholder-text: "手机号"; }
-            LineEdit { height: 40px; placeholder-text: "密码"; }
+        LineEdit { height: 40px; placeholder-text: "网址"; }
+        LineEdit { height: 40px; placeholder-text: "账号"; }
+        LineEdit { height: 40px; placeholder-text: "邮箱"; }
+        LineEdit { height: 40px; placeholder-text: "手机号"; }
+        LineEdit { height: 40px; placeholder-text: "密码"; }
 
-            Button { 
-                text: "编辑"; 
-                primary: true; 
-                height: 40px;
-                clicked => {
-                    root.visible = false;
-                } 
-            }
+        Button { 
+            text: "编辑"; 
+            primary: true; 
+            height: 40px;
+            clicked => {
+                root.close();
+            } 
         }
-    } 
+    }
 }

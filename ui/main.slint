@@ -3,56 +3,150 @@ import { MainWindowContent } from "content.slint";
 import { LoginWindowContent } from "login.slint";
 import { CreateWindowContent } from "create.slint";
 import { EditWindowContent } from "edit.slint";
+import { WindowCover } from "cover.slint";
+import { PasswordWindowContent } from "password.slint";
+import { DeleteWindowContent } from "delete.slint";
 
 export component MainWindow inherits Window {
-    in-out property <length> windowWidth: 300px;
-    in-out property <length> windowHeight: 400px;
-
-    in-out property <bool> mainWindowContentVisible: false; 
-
-
-    width: windowWidth;
-    height: windowHeight;
-    background:#e3f2fd;
+    width: 1400px;
+    height: 800px;
+    background: white;
 
     //菜单
-    callback createRecord();
-    callback setting();
     MenuBar {
         Menu {
             title: @tr("新建");
-            MenuItem { title: "新建"; activated => { createRecord() } }
+            MenuItem { title: "新建"; activated => { showCreateWindow() } }
         }
 
         Menu {
-            title: @tr("设置");
-            MenuItem { title: @tr("设置"); activated => { setting() } }
+            title: @tr("修改密码");
+            MenuItem { title: @tr("修改密码"); activated => { showPasswordWindow() } }
         }
     }
 
-    //登录窗口
-    LoginWindowContent {
-        //点击登录按钮
-        loginBtnClicked => {
-            //主窗口显示
-            root.mainWindowContentVisible = true;
-
-            //重设窗口宽高
-            root.windowWidth = 1400px;
-            root.windowHeight = 800px;
-        }
-    } 
+    //窗口初始化
+    init => {
+        showLoginWindow();
+    }
 
     //主窗口
-    mianWindowHandler := MainWindowContent {
-        mainWindowContentVisible: mainWindowContentVisible;
+    MainWindowContent {
+        edit => {
+            parent.showEditWindow();
+        }
+
+        delete => {
+            parent.showDeleteWindow();
+        }
+    }
+
+    //遮罩
+    windowCoverHandler := WindowCover {}
+
+
+    //登录窗口
+    loginWindowHandler := LoginWindowContent {
+        close => {
+            parent.hideLoginWindow();
+        }
+    }
+
+    //显示登录窗口
+    callback showLoginWindow();
+    showLoginWindow => {
+        windowCoverHandler.visible = true;
+        loginWindowHandler.visible = true;
+    }
+
+    //隐藏登录窗口
+    callback hideLoginWindow();    
+    hideLoginWindow => {
+        loginWindowHandler.visible = false;
+        windowCoverHandler.visible = false;
     }
     
     //创建窗口
-    createWindowHandler := CreateWindowContent {} 
-    createRecord => { createWindowHandler.visible = true; }
+    createWindowHandler := CreateWindowContent {
+        close => {
+            parent.hideCreateWindow();
+        }
+    } 
+
+    //显示创建窗口
+    callback showCreateWindow();
+    showCreateWindow => { 
+        windowCoverHandler.visible = true;
+        createWindowHandler.visible = true;
+    }
+
+    //隐藏创建窗口
+    callback hideCreateWindow();
+    hideCreateWindow => {
+        windowCoverHandler.visible = false;
+        createWindowHandler.visible = false;
+    }
 
     //编辑窗口
-    editWindowHandler := EditWindowContent {}
+    editWindowHandler := EditWindowContent {
+        close => {
+            parent.hideEditWindow();
+        }
+    }
 
+    //显示编辑窗口
+    callback showEditWindow();
+    showEditWindow => {
+        windowCoverHandler.visible = true;
+        editWindowHandler.visible = true;
+    }
+
+    //隐藏编辑窗口
+    callback hideEditWindow();
+    hideEditWindow => {
+        editWindowHandler.visible = false;
+        windowCoverHandler.visible = false;
+    }
+
+    //删除确认窗口
+    deleteWindowHandler := DeleteWindowContent {
+        close => {
+            parent.hideDeleteWindow();
+        }
+    }
+
+    //显示删除确认窗口
+    callback showDeleteWindow();
+    showDeleteWindow => {
+        windowCoverHandler.visible = true;
+        deleteWindowHandler.visible = true;
+    }
+
+    //隐藏删除确认窗口
+    callback hideDeleteWindow();
+    hideDeleteWindow => {
+        windowCoverHandler.visible = false;
+        deleteWindowHandler.visible = false;
+    }
+
+    //修改密码窗口
+    passwordWindowHandler := PasswordWindowContent {
+        close => {
+            parent.hidePasswordWindow();
+        }
+    }
+
+    //显示修改密码窗口
+    callback showPasswordWindow();
+    showPasswordWindow => {
+        passwordWindowHandler.visible = true;
+        windowCoverHandler.visible = true;
+    }
+
+    //隐藏修改密码窗口
+    callback hidePasswordWindow();
+    hidePasswordWindow => {
+        passwordWindowHandler.visible = false;
+        windowCoverHandler.visible = false;
+    }
 }
