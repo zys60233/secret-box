@@ -157,15 +157,24 @@ export component MainWindow inherits Window {
 
     //编辑窗口
     editWindowHandler := EditWindowContent {
-        in-out property <string> id;
-        in-out property <string> website;
-        in-out property <string> account;
-        in-out property <string> email;
-        in-out property <string> phone;
-        in-out property <string> password;
+        in-out property <bool> edit_result;
 
+        //关闭窗口
         close => {
             parent.hideEditWindow();
+        }
+
+        //生成随机密码
+        generate => {
+            self.password = generate();
+        }
+
+        //编辑
+        edit => {
+            edit_result = edit(self.id, self.website, self.account, self.email, self.phone, self.password);
+            if edit_result {
+                parent.hideEditWindow();
+            }
         }
     }
 
@@ -188,6 +197,13 @@ export component MainWindow inherits Window {
     hideEditWindow => {
         editWindowHandler.visible = false;
         windowCoverHandler.visible = false;
+        editWindowHandler.id = "";
+        editWindowHandler.website = "";
+        editWindowHandler.account = "";
+        editWindowHandler.email = "";
+        editWindowHandler.phone = "";
+        editWindowHandler.password = "";
+
     }
 
     //删除确认窗口
@@ -268,12 +284,14 @@ export component MainWindow inherits Window {
 
     //设置列表数据
     callback set_list(id: string, website: string, account: string, email: string, phone: string, password: string);
-    set_list(id, website, account, email, phone, password) => {
-        mainWindowHander.ListData.
-    }
+    //set_list(id, website, account, email, phone, password) => {
+    //}
 
     //新增
     callback create(website: string, account: string, email: string, phone: string, password: string) -> bool;
+
+    //编辑
+    callback edit(id: string, website: string, account: string, email: string, phone: string, password: string) -> bool;
 
     //生成随机密码
     callback generate() -> string;

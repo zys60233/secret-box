@@ -21,6 +21,17 @@ fn main() {
         db::create_account(website.to_string(), account.to_string(), email.to_string(), phone.to_string(), password.to_string())
     });
 
+    //编辑
+    main_window.on_edit(move |id, website, account, email, phone, password| {
+        println!("{}", id);
+        println!("{}", website);
+        println!("{}", account);
+        println!("{}", email);
+        println!("{}", phone);
+        println!("{}", password);
+        false
+    });
+
     //生成随机密码
     main_window.on_generate(move || {
         generate_password()
@@ -37,8 +48,8 @@ fn main() {
     });
 
     //列表
-    let data = db::list_data();
-    main_window.invoke_set_list(data);
+    //let data = db::list_data();
+    //main_window.invoke_set_list(data);
 
     main_window.run().unwrap();
 }
