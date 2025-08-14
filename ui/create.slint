@@ -1,6 +1,12 @@
 import { LineEdit, Button, VerticalBox } from "std-widgets.slint";
 
 export component CreateWindowContent inherits Rectangle {
+    in-out property <string> website;
+    in-out property <string> account;
+    in-out property <string> email;
+    in-out property <string> phone;
+    in-out property <string> password;
+
     //创建
     visible: false;
     width: 300px;
@@ -10,6 +16,10 @@ export component CreateWindowContent inherits Rectangle {
     border-radius: 10px;
 
     callback close();
+
+    callback generate();
+
+    callback create();
 
     Rectangle {
         x: 0;
@@ -32,17 +42,58 @@ export component CreateWindowContent inherits Rectangle {
         alignment: center;
         spacing: 20px;
 
-        LineEdit { height: 40px; placeholder-text: "网址"; }
-        LineEdit { height: 40px; placeholder-text: "账号"; }
-        LineEdit { height: 40px; placeholder-text: "邮箱"; }
-        LineEdit { height: 40px; placeholder-text: "手机号"; }
-        LineEdit { height: 40px; placeholder-text: "密码"; }
+        LineEdit {
+            height: 40px;
+            placeholder-text: "网址";
+            text: root.website;
+            edited(text) => {
+                root.website = text
+            }
+        }
+
+        LineEdit {
+            height: 40px;
+            placeholder-text: "账号";
+            text: root.account;
+            edited(text) => {
+                root.account = text
+            }
+        }
+
+        LineEdit {
+            height: 40px;
+            placeholder-text: "邮箱";
+            text: root.email;
+            edited(text) => {
+                root.email = text
+            }
+        }
+
+        LineEdit {
+            height: 40px;
+            placeholder-text: "手机号";
+            input-type: number;
+            text: root.phone;
+            edited(text) => {
+                root.phone = text
+            }
+        }
+
+        LineEdit {
+            height: 40px;
+            placeholder-text: "密码";
+            text: root.password;
+            edited(text) => {
+                root.password = text
+            }
+        }
 
         Button {
             text: "生成随机密码";
             height: 40px;
             clicked => {
                 debug("生成随机密码");
+                root.generate();
             }
         }
 
@@ -54,7 +105,7 @@ export component CreateWindowContent inherits Rectangle {
                 width: 100px;
                 height: 40px;
                 clicked => {
-                    root.close();
+                    root.create();
                 } 
             }
 

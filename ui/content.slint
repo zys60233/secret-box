@@ -1,4 +1,4 @@
-import { VerticalBox, ListView, Button, HorizontalBox, } from "std-widgets.slint";
+import { VerticalBox, ListView, Button, HorizontalBox } from "std-widgets.slint";
 
 //列表行结构
 struct ListItem {
@@ -75,24 +75,20 @@ component TableBody inherits Rectangle {
 //表格内容
 export component MainWindowContent inherits VerticalBox {
     width: 95%;
-    height: 95%;
+    height: 90%;
     visible: true;
+    y: 0px;
 
     //表格数据
     in-out property <[ListItem]> ListData: [
-        { id: 1, website: "https://www.baidu.com", account: "妖刀", email: "123@123.com", phone: "12344444444", password: "fldsjafklsda", operation: true },
-        { id: 2, website: "https://www.jd.com", account: "zhang", email: "234.123.com", phone: "1234444444", password: "jfldsjaflsda", operation: true },
-        { id: 3, website: "https://www.taobao.com", account: "w2ang", email: "345@123.com", phone: "123444444", password: "fldsjafldsa", operation: true },
-        { id: 4, website: "https://www.rust.rs", account: "zyseee", email: "4566@123.com", phone: "123444444", password: "fldjsafklsda", operation: true },
-        { id: 5, website: "https://www.zhihu.com", account: "iiiiikji", email: "567@123.com", phone: "123444444", password: "fjdlsjafldsa", operation: true },
-        { id: 6, website: "https://www.bilibili.com", account: "konng", email: "678@123.com", phone: "32133321321", password: "fdklsjafdlsa", operation: true },
+        { id: 6, website: "https://www.bilibili.com", account: "konng", email: "678@123.com", phone: "32133321321", password: "fdklsjafdlsa", operation: true }
     ];
 
     //编辑
-    callback edit();
+    callback edit(id: string, website: string, account: string, email: string, phone: string, password: string);
 
     //删除
-    callback delete();
+    callback delete(id: int);
 
     TableHead {}
 
@@ -103,12 +99,12 @@ export component MainWindowContent inherits VerticalBox {
 
             //点击编辑按钮
             edit => {
-                root.edit();
+                root.edit(self.itemData.id, self.itemData.website, self.itemData.account, self.itemData.email, self.itemData.phone, self.itemData.password);
             }
 
             //点击删除按钮
             delete => {
-                root.delete();
+                root.delete(self.itemData.id);
             }
         }
     }

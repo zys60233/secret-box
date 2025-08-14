@@ -31,11 +31,50 @@ export component EditWindowContent inherits Rectangle {
         alignment: center;
         spacing: 20px;
 
-        LineEdit { height: 40px; placeholder-text: "网址"; }
-        LineEdit { height: 40px; placeholder-text: "账号"; }
-        LineEdit { height: 40px; placeholder-text: "邮箱"; }
-        LineEdit { height: 40px; placeholder-text: "手机号"; }
-        LineEdit { height: 40px; placeholder-text: "密码"; }
+        LineEdit {
+            height: 40px;
+            placeholder-text: "网址";
+            text: root.website;
+            edited(text) => {
+                root.website = text;
+            }
+        }
+
+        LineEdit {
+            height: 40px;
+            placeholder-text: "账号";
+            text: root.account;
+            edited(text) => {
+                root.account = text;
+            }
+        }
+
+        LineEdit {
+            height: 40px;
+            placeholder-text: "邮箱";
+            text: root.email;
+            edited(text) => {
+                root.email = text;
+            }
+        }
+
+        LineEdit {
+            height: 40px;
+            placeholder-text: "手机号";
+            text: root.phone;
+            edited(text) => {
+                root.phone = text;
+            }
+        }
+
+        LineEdit {
+            height: 40px;
+            placeholder-text: "密码";
+            text: root.password;
+            edited(text) => {
+                root.password = text;
+            }
+        }
 
         Button {
             text: "生成随机密码";

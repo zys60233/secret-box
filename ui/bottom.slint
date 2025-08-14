@@ -1,0 +1,51 @@
+import { Button } from "std-widgets.slint";
+
+export component BottomBar inherits Rectangle {
+    width: 100%;
+    height: 80px;
+    z: 100;
+    y: 720px;
+    opacity: 0.8;
+    background: #F1FAFB;
+
+    callback showCreate();
+    callback showEdit();
+
+    VerticalLayout {
+        alignment: center;
+
+        HorizontalLayout {
+            alignment: center;
+
+            Button {
+                width: 100px;
+                height: 40px;
+                text: "新建";
+                primary: true;
+
+                clicked => {
+                    root.showCreate();
+                }
+            }
+
+            Rectangle {
+                width: 100px;
+            }
+
+            Rectangle {
+                background: #BF263C;
+                width: 100px;
+                border-radius: 5px;
+                Button {
+                    width: 100px;
+                    height: 40px;
+                    text: "修改密码";
+
+                    clicked => {
+                        root.showEdit();
+                    }
+                }
+            } 
+        } 
+    }
+}

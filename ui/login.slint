@@ -2,12 +2,10 @@ import { VerticalBox, Button, HorizontalBox, LineEdit } from "std-widgets.slint"
 
 //登录窗口
 export component LoginWindowContent inherits Rectangle {
-    width: 300px;
-    height: 400px;
-    x: 550px;
-    z: 20;
+    in-out property <string> pwd;
+    in-out property <string> alert_text: "";
+
     background: white;
-    border-radius: 10px;
     visible: false;
 
     callback close();
@@ -29,6 +27,17 @@ export component LoginWindowContent inherits Rectangle {
                 font-size: 20px;
                 placeholder-text: "请输入密码";
                 input-type: password;
+
+                edited(text) => {
+                    root.pwd = text;
+                    root.alert_text = "";
+                }
+            }
+
+            Text {
+                text: alert_text;
+                color: red;
+                font-size: 10px;
             }
 
             Button {
