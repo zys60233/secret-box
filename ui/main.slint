@@ -7,8 +7,8 @@ import { WindowCover } from "cover.slint";
 import { PasswordWindowContent } from "password.slint";
 import { DeleteWindowContent } from "delete.slint";
 import { BottomBar } from "bottom.slint";
+import { Account, ListData } from "global.slint";
 
-//列表行结构
 struct ListItem {
     id: int,
     website: string,
@@ -179,7 +179,7 @@ export component MainWindow inherits Window {
     }
 
     //显示编辑窗口
-    callback showEditWindow(id: string, website: string, account: string, email: string, phone: string, password: string);
+    callback showEditWindow(id: int, website: string, account: string, email: string, phone: string, password: string);
     showEditWindow(id, website, account, email, phone, password) => {
         closeAllWindow();
         windowCoverHandler.visible = true;
@@ -197,7 +197,7 @@ export component MainWindow inherits Window {
     hideEditWindow => {
         editWindowHandler.visible = false;
         windowCoverHandler.visible = false;
-        editWindowHandler.id = "";
+        editWindowHandler.id = 0;
         editWindowHandler.website = "";
         editWindowHandler.account = "";
         editWindowHandler.email = "";
@@ -283,15 +283,18 @@ export component MainWindow inherits Window {
     callback login(password: string) -> bool;
 
     //设置列表数据
-    callback set_list(id: string, website: string, account: string, email: string, phone: string, password: string);
-    //set_list(id, website, account, email, phone, password) => {
-    //}
+    callback set_list(data: [Account]);
+    set_list(data) => {
+        debug("这是列表数据");
+        debug(data);
+        ListData.list = data;
+    }
 
     //新增
     callback create(website: string, account: string, email: string, phone: string, password: string) -> bool;
 
     //编辑
-    callback edit(id: string, website: string, account: string, email: string, phone: string, password: string) -> bool;
+    callback edit(id: int, website: string, account: string, email: string, phone: string, password: string) -> bool;
 
     //生成随机密码
     callback generate() -> string;

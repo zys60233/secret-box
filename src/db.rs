@@ -1,5 +1,15 @@
 use sqlite::Connection;
 
+#[derive(Debug)]
+pub struct Account {
+    pub id: i64,
+    pub website: String,
+    pub account: String,
+    pub email: String,
+    pub phone: String,
+    pub password: String
+}
+
 //链接数据库
 fn connect() -> Connection {
     sqlite::open("secret.db").expect("数据库连接失败，请重启")
@@ -61,11 +71,9 @@ pub fn login(password: String) -> bool {
 }
 
 //获取列表数据
-pub fn list_data() -> Vec<(i64, String, String, String, i64, String)> {
+pub fn list_data() -> Vec<Account> {
     let con = connect();
-    let mut list_data: Vec<(i64, String, String, String, i64, String)> = Vec::new();
-
-    println!("这是列表数据");
+    let mut list_data: Vec<Account> = Vec::new();
 
     //查询账号密码
     let search_sql = "SELECT * FROM password WHERE id > ?";
@@ -77,16 +85,16 @@ pub fn list_data() -> Vec<(i64, String, String, String, i64, String)> {
         .map(|row| row.unwrap());
 
     for row in search_result {
-        let account_data = (
-            row.read::<i64, _>("id"),
-            String::from(row.read::<&str, _>("website")),
-            String::from(row.read::<&str, _>("account")),
-            String::from(row.read::<&str, _>("email")),
-            row.read::<i64, _>("phone"),
-            String::from(row.read::<&str, _>("password"))
-        );
+        let account = Account {
+            id: row.read::<i64, _>("id"),
+            website: String::from(row.read::<&str, _>("website")),
+            account: String::from(row.read::<&str, _>("account")),
+            email: String::from(row.read::<&str, _>("email")),
+            phone: row.read::<i64, _>("phone").to_string(),
+            password: String::from(row.read::<&str, _>("password"))
+        };
 
-        list_data.push(account_data);
+        list_data.push(account);
     } 
 
     list_data
@@ -159,6 +167,30 @@ pub fn delete_account(id: i64) -> bool {
     let delete_result = delete_statement.next();
 
     match delete_result {
+        Ok(_) => true,
+        Err(_) => false
+    }
+}
+
+//编辑
+pub fn edit_account(id: i64, website: String, account: String, email: String, phone: String, password: String) -> bool {
+    //连接数据库
+    let con = connect();
+
+    //更新账号
+    let edit_sql = "UPDATE password set website = ?, account = ?, email = ?, phone = ?, password = ? WHERE id = ?;";
+    let mut edit_statement = con.prepare(edit_sql).unwrap();
+
+    edit_statement.bind((1, website.as_str())).unwrap();
+    edit_statement.bind((2, account.as_str())).unwrap();
+    edit_statement.bind((3, email.as_str())).unwrap();
+    edit_statement.bind((4, phone.parse::<f64>().unwrap())).unwrap();
+    edit_statement.bind((5, password.as_str())).unwrap();
+    edit_statement.bind((6, id)).unwrap();
+
+    let edit_result = edit_statement.next();
+    
+    match edit_result {
         Ok(_) => true,
         Err(_) => false
     }

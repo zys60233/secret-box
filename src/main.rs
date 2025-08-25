@@ -1,13 +1,13 @@
 slint::include_modules!();
 
 use rand::prelude::*;
-use slint::SharedString;
+use slint::{SharedString, VecModel};
 
 pub mod db;
 
 fn main() {
     let main_window = MainWindow::new().unwrap();
-  
+ 
     //程序初始化
     db::init();
 
@@ -23,13 +23,7 @@ fn main() {
 
     //编辑
     main_window.on_edit(move |id, website, account, email, phone, password| {
-        println!("{}", id);
-        println!("{}", website);
-        println!("{}", account);
-        println!("{}", email);
-        println!("{}", phone);
-        println!("{}", password);
-        false
+        db::edit_account(id as i64, website.to_string(), account.to_string(), email.to_string(), phone.to_string(), password.to_string())
     });
 
     //生成随机密码
@@ -46,10 +40,13 @@ fn main() {
     main_window.on_delete(move |id| {
         db::delete_account(id as i64)
     });
+    
 
     //列表
-    //let data = db::list_data();
-    //main_window.invoke_set_list(data);
+    let data = db::list_data();
+    println!("{:?}", data);
+    let main_window_strong = main_window.clone_strong();
+    set_list_data(main_window_strong, data);
 
     main_window.run().unwrap();
 }
@@ -68,4 +65,23 @@ fn generate_password() -> SharedString {
     }
 
     password
+}
+
+//设置列表数据
+fn set_list_data(app: MainWindow, list: Vec<db::Account>) {
+    let mut list_data: Vec<slint_generatedMainWindow::Account> = Vec::new();
+    for account in list {
+        let item = slint_generatedMainWindow::Account {
+            id: account.id as i32,
+            website: account.website.into(),
+            account: account.account.into(),
+            email: account.email.into(),
+            phone: account.phone.into(),
+            password: account.password.into()
+        };
+        list_data.push(item);
+    }
+
+    let model = VecModel::from_slice(&list_data);
+    app.invoke_set_list(model);
 }
