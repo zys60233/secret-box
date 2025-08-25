@@ -19,8 +19,6 @@ fn connect() -> Connection {
 pub fn init() {
     let con = connect();
 
-    println!("初始化");
-
     //查询sqlite_master表，判断password表是否存在
     let table_exist_sql = "SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'password';";
     let table_count = con.prepare(table_exist_sql).unwrap().iter().count();

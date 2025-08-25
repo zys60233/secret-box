@@ -17,13 +17,23 @@ fn main() {
     });
 
     //新增
+    let main_window_create = main_window.clone_strong();
     main_window.on_create(move |website, account, email, phone, password| {
-        db::create_account(website.to_string(), account.to_string(), email.to_string(), phone.to_string(), password.to_string())
+        let create_result = db::create_account(website.to_string(), account.to_string(), email.to_string(), phone.to_string(), password.to_string());
+        if create_result {
+            set_list_data(&main_window_create);
+        }
+        create_result
     });
 
     //编辑
+    let main_window_edit = main_window.clone_strong();
     main_window.on_edit(move |id, website, account, email, phone, password| {
-        db::edit_account(id as i64, website.to_string(), account.to_string(), email.to_string(), phone.to_string(), password.to_string())
+        let edit_result = db::edit_account(id as i64, website.to_string(), account.to_string(), email.to_string(), phone.to_string(), password.to_string());
+        if edit_result {
+            set_list_data(&main_window_edit);
+        }
+        edit_result
     });
 
     //生成随机密码
@@ -32,21 +42,27 @@ fn main() {
     });
 
     //修改密码
-    main_window.on_save(move |pwd| {
-        db::update_admin_password(pwd.to_string())
+    let main_window_save = main_window.clone_strong();
+    main_window.on_save(move |pwd| { 
+        let save_result = db::update_admin_password(pwd.to_string());
+        if save_result {
+            set_list_data(&main_window_save);
+        }
+        save_result
     });
 
     //删除
+    let main_window_delete = main_window.clone_strong();
     main_window.on_delete(move |id| {
-        db::delete_account(id as i64)
+        let delete_result = db::delete_account(id as i64);
+        if delete_result {
+            set_list_data(&main_window_delete);
+        }
+        delete_result
     });
     
-
     //列表
-    let data = db::list_data();
-    println!("{:?}", data);
-    let main_window_strong = main_window.clone_strong();
-    set_list_data(main_window_strong, data);
+    set_list_data(&main_window);
 
     main_window.run().unwrap();
 }
@@ -68,9 +84,11 @@ fn generate_password() -> SharedString {
 }
 
 //设置列表数据
-fn set_list_data(app: MainWindow, list: Vec<db::Account>) {
+fn set_list_data(app: &MainWindow) {
+    let data = db::list_data();
+
     let mut list_data: Vec<slint_generatedMainWindow::Account> = Vec::new();
-    for account in list {
+    for account in data {
         let item = slint_generatedMainWindow::Account {
             id: account.id as i32,
             website: account.website.into(),

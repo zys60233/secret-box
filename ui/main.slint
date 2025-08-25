@@ -285,8 +285,6 @@ export component MainWindow inherits Window {
     //设置列表数据
     callback set_list(data: [Account]);
     set_list(data) => {
-        debug("这是列表数据");
-        debug(data);
         ListData.list = data;
     }
 
