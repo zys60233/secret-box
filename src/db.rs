@@ -16,45 +16,48 @@ fn connect() -> Connection {
 }
 
 //数据库初始化
-pub fn init() {
+pub fn init() -> bool {
     let con = connect();
 
     //查询sqlite_master表，判断password表是否存在
     let table_exist_sql = "SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'password';";
     let table_count = con.prepare(table_exist_sql).unwrap().iter().count();
+    let mut create_result = false;
+    let mut init_result = false;
 
     if table_count == 0 {
         //创建密码表
         let create_table_sql = "CREATE TABLE password (id INTEGER, website TEXT, account TEXT, email TEXT, phone INTEGER, password TEXT);";
-        let create_result = con.execute(create_table_sql);
-        match create_result {
-            Ok(res) => println!("数据表创建成功,{:?}", res),
-            Err(err) => println!("数据表创建失败,{:?}", err)
-        } 
+        create_result = match con.execute(create_table_sql) {
+            Ok(_) => true,
+            Err(_) => false
+        };
     }
 
     //判断初始数据是否创建
-    let init_data_exist_sql = "SELECT * FROM password WHERE id = ?";
-    let mut init_data_exist_statement = con.prepare(init_data_exist_sql).unwrap();
-    init_data_exist_statement.bind((1, 1)).unwrap();
-    init_data_exist_statement.next().unwrap();
-    let init_id = init_data_exist_statement.read::<i64, _>("id").unwrap();
-    if init_id == 0 {
-        //创建初始数据
-        let create_main_password = "INSERT INTO password VALUES (1, 'secret', 'admin', '', '', '123456');";
-        let insert_result = con.execute(create_main_password);
-        match insert_result {
-            Ok(res) => println!("初始数据插入成功,{:?}", res),
-            Err(err) => println!("初始数据插入失败,{:?}", err)
+    if create_result {
+        let init_data_exist_sql = "SELECT * FROM password WHERE id = ?";
+        let mut init_data_exist_statement = con.prepare(init_data_exist_sql).unwrap();
+        init_data_exist_statement.bind((1, 1)).unwrap();
+        init_data_exist_statement.next().unwrap();
+        let init_id = init_data_exist_statement.read::<i64, _>("id").unwrap();
+        if init_id == 0 {
+            //创建初始数据
+            let create_main_password = "INSERT INTO password VALUES (1, 'secret', 'admin', '', '', '123456');";
+            init_result = match con.execute(create_main_password) {
+                Ok(_) => true,
+                Err(_) => false
+            };
         }
-    }
+    } 
+
+    init_result
 }
 
 //登录
 pub fn login(password: String) -> bool {
     let con = connect();
     
-    println!("开始获取数据");
     //获取主账户数据
     let main_account_sql = "SELECT * FROM password WHERE id = ?;";
     let mut statement = con.prepare(main_account_sql).unwrap();
