@@ -1,3 +1,5 @@
+#![windows_subsystem = "windows"]
+
 slint::include_modules!();
 
 use rand::prelude::*;
@@ -7,7 +9,7 @@ pub mod db;
 
 fn main() {
     let main_window = MainWindow::new().unwrap();
- 
+
     //程序初始化
     db::init();
 
