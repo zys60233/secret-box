@@ -1,4 +1,5 @@
 use rusqlite::{Connection, Error, named_params, params};
+use dotenv::dotenv;
 
 #[derive(Debug)]
 pub struct Account {
@@ -24,7 +25,8 @@ pub fn connect () -> Result<DB, String> {
     //Note: use `PRAGMA key = 'your_key';` to open an encrypted database.
     //If the database file already exists unencrypted, `PRAGMA key` alone
     //won't encrypt it — use `PRAGMA rekey` or recreate the DB.
-    let key = "123421321";
+    dotenv().ok();
+    let key = dotenv::var("secret_key").unwrap();
     conn.execute_batch(&format!("PRAGMA key = '{}';", key)).map_err(|e| format!("设置加密密钥失败：{}", e))?;
 
     // 验证提供的 key 是否能正确打开/解密数据库；如果失败，返回友好错误信息。
