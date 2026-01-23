@@ -25,7 +25,8 @@ pub fn connect () -> Result<DB, String> {
     //Note: use `PRAGMA key = 'your_key';` to open an encrypted database.
     //If the database file already exists unencrypted, `PRAGMA key` alone
     //won't encrypt it — use `PRAGMA rekey` or recreate the DB.
-    let key = "zys0623.";
+    //可以自己设置key，更加安全
+    let key = "defualt_key";
     conn.execute_batch(&format!("PRAGMA key = '{}';", key)).map_err(|e| format!("设置加密密钥失败：{}", e))?;
 
     // 验证提供的 key 是否能正确打开/解密数据库；如果失败，返回友好错误信息。
