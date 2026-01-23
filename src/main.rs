@@ -1,3 +1,4 @@
+//#![windows_subsystem = "windows"]
 slint::include_modules!();
 
 use rand::{rng, Rng};
@@ -27,13 +28,12 @@ fn main() {
     main_window.on_login(move |pwd| {
         db_handle_login.login(pwd.to_string())
     });
-
     
     //新增
     let db_handle_create = Rc::clone(&db_handle);
     let main_window_create = main_window.clone_strong();
-    main_window.on_create(move |website, account, email, phone, password| {
-        let create_result = db_handle_create.create_account(website.to_string(), account.to_string(), email.to_string(), phone.to_string(), password.to_string());
+    main_window.on_create(move |name, website, account, email, phone, password| {
+        let create_result = db_handle_create.create_account(name.to_string(),website.to_string(), account.to_string(), email.to_string(), phone.to_string(), password.to_string());
         if create_result {
             set_list_data(&main_window_create, &db_handle_create);
         }
@@ -43,8 +43,8 @@ fn main() {
     //编辑
     let db_handle_edit = Rc::clone(&db_handle);
     let main_window_edit = main_window.clone_strong();
-    main_window.on_edit(move |id, website, account, email, phone, password| {
-        let edit_result = db_handle_edit.edit_account(id as i64, website.to_string(), account.to_string(), email.to_string(), phone.to_string(), password.to_string());
+    main_window.on_edit(move |id, name, website, account, email, phone, password| {
+        let edit_result = db_handle_edit.edit_account(id as i64, name.to_string(), website.to_string(), account.to_string(), email.to_string(), phone.to_string(), password.to_string());
         if edit_result {
             set_list_data(&main_window_edit, &db_handle_edit);
         }
@@ -84,7 +84,6 @@ fn main() {
     main_window.run().unwrap();
 }
 
-
 //生成随机密码
 fn generate_password() -> SharedString {
     let seed: Vec<char> = vec!['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
@@ -109,6 +108,7 @@ fn set_list_data(app: &MainWindow, db_handle: &Rc<db::DB>) {
     for account in data {
         let item = slint_generatedMainWindow::Account {
             id: account.id as i32,
+            name: account.name.into(),
             website: account.website.into(),
             account: account.account.into(),
             email: account.email.into(),

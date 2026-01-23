@@ -3,6 +3,7 @@ use rusqlite::{Connection, Error, named_params, params};
 #[derive(Debug)]
 pub struct Account {
     pub id: i64,
+    pub name: String,
     pub website: String,
     pub account: String,
     pub email: String,
@@ -41,6 +42,7 @@ impl DB {
         // Ensure table exists and create it if needed. Use TEXT for phone to simplify input handling.
         let create_table_sql = "CREATE TABLE IF NOT EXISTS password (
             id INTEGER PRIMARY KEY,
+            name TEXT,
             website TEXT,
             account TEXT,
             email TEXT,
@@ -53,8 +55,8 @@ impl DB {
         }
 
         // Insert initial admin row if not present
-        let insert_admin_sql = "INSERT INTO password(id, website, account, email, phone, password)
-            SELECT 1, 'secret', 'admin', '', '', '123456' WHERE NOT EXISTS (SELECT 1 FROM password WHERE id = 1);";
+        let insert_admin_sql = "INSERT INTO password(id, name, website, account, email, phone, password)
+            SELECT 1, 'main password', 'secret', 'admin', '', '', '123456' WHERE NOT EXISTS (SELECT 1 FROM password WHERE id = 1);";
 
         match self.conn.execute(insert_admin_sql, []) {
             Ok(_) => true,
@@ -84,15 +86,16 @@ impl DB {
         let mut list_data: Vec<Account> = Vec::new();
 
         //查询账号密码
-        let mut stmt = self.conn.prepare("SELECT id, website, account, email, phone, password FROM password WHERE id > ?") .unwrap();
+        let mut stmt = self.conn.prepare("SELECT id, name, website, account, email, phone, password FROM password WHERE id > ?") .unwrap();
         let rows = stmt.query_map(params![1], |row| {
             Ok(Account {
                 id: row.get(0)?,
-                website: row.get(1)?,
-                account: row.get(2)?,
-                email: row.get(3)?,
-                phone: row.get(4)?,
-                password: row.get(5)?
+                name: row.get(1)?,
+                website: row.get(2)?,
+                account: row.get(3)?,
+                email: row.get(4)?,
+                phone: row.get(5)?,
+                password: row.get(6)?
             })
         }).unwrap();
 
@@ -106,7 +109,7 @@ impl DB {
     }
 
     //创建账号
-    pub fn create_account(&self, website: String, account: String, email: String, phone: String, password: String) -> bool {
+    pub fn create_account(&self, name: String, website: String, account: String, email: String, phone: String, password: String) -> bool {
         //查询所有数据
         // get max id
         let max_id_res: Result<i64, _> = self.conn.query_row("SELECT IFNULL(MAX(id), 0) FROM password", [], |r| r.get(0));
@@ -114,10 +117,10 @@ impl DB {
             Ok(id) => id,
             Err(_) => 0
         };
-        last_id += 1;
-
-        let insert_sql = "INSERT INTO password(id, website, account, email, phone, password) VALUES (?, ?, ?, ?, ?, ?);";
-        let res = self.conn.execute(insert_sql, params![last_id, website.as_str(), account.as_str(), email.as_str(), phone.as_str(), password.as_str()]);
+        last_id += 1; 
+        
+        let insert_sql = "INSERT INTO password(id, name, website, account, email, phone, password) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        let res = self.conn.execute(insert_sql, params![last_id, name.as_str(), website.as_str(), account.as_str(), email.as_str(), phone.as_str(), password.as_str()]);
 
         match res {
             Ok(_) => true,
@@ -152,12 +155,13 @@ impl DB {
     }
 
     //编辑
-    pub fn edit_account(&self, id: i64, website: String, account: String, email: String, phone: String, password: String) -> bool {
+    pub fn edit_account(&self, id: i64, name: String, website: String, account: String, email: String, phone: String, password: String) -> bool {
         //更新账号
-        let edit_sql = "UPDATE password set website = :website, account = :account, email = :email, phone = :phone, password = :password WHERE id = :id;";
+        let edit_sql = "UPDATE password set name = :name, website = :website, account = :account, email = :email, phone = :phone, password = :password WHERE id = :id;";
         let mut edit_statement = self.conn.prepare(edit_sql).unwrap();
         let edit_result = edit_statement.execute(named_params! {
             ":id": id,
+            ":name": name.as_str(),
             ":website": website.as_str(),
             ":account": account.as_str(),
             ":email": email.as_str(),

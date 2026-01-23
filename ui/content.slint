@@ -20,6 +20,7 @@ component TableHead inherits Rectangle {
      
     HorizontalBox {
         TableText { width:  40px; text: "序号"; color: tableHeadTextColor; }
+        TableText { width: 200px; text: "网站名称"; color: tableHeadTextColor; }
         TableText { width: 400px; text: "网址"; color: tableHeadTextColor; }
         TableText { width: 150px; text: "账号"; color: tableHeadTextColor; }
         TableText { width: 250px; text: "邮箱"; color: tableHeadTextColor; }
@@ -46,6 +47,7 @@ component TableBody inherits Rectangle {
     
     HorizontalBox {
         TableText { width: 40px; text: itemData.id; }
+        TableText { width: 200px; text: itemData.name;}
         TableText { width: 400px; text: itemData.website; }
         TableText { width: 150px; text: itemData.account; }
         TableText { width: 250px; text: itemData.email; }
@@ -71,7 +73,7 @@ export component MainWindowContent inherits VerticalBox {
     y: 0px;
 
     //编辑
-    callback edit(id: int, website: string, account: string, email: string, phone: string, password: string);
+    callback edit(id: int, name: string, website: string, account: string, email: string, phone: string, password: string);
 
     //删除
     callback delete(id: int);
@@ -85,7 +87,7 @@ export component MainWindowContent inherits VerticalBox {
 
             //点击编辑按钮
             edit => {
-                root.edit(self.itemData.id, self.itemData.website, self.itemData.account, self.itemData.email, self.itemData.phone, self.itemData.password);
+                root.edit(self.itemData.id, self.itemData.name, self.itemData.website, self.itemData.account, self.itemData.email, self.itemData.phone, self.itemData.password);
             }
 
             //点击删除按钮
