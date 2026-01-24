@@ -141,19 +141,25 @@ export component MainWindow inherits Window {
         closeAllWindow();
         windowCoverHandler.visible = true;
         createWindowHandler.visible = true;
-    }
-
-    //隐藏创建窗口
-    callback hideCreateWindow();
-    hideCreateWindow => {
-        windowCoverHandler.visible = false;
         createWindowHandler.name = "";
         createWindowHandler.website = "";
         createWindowHandler.account = "";
         createWindowHandler.email = "";
         createWindowHandler.phone = "";
         createWindowHandler.password = "";
+    }
+
+    //隐藏创建窗口
+    callback hideCreateWindow();
+    hideCreateWindow => {
+        windowCoverHandler.visible = false;
         createWindowHandler.visible = false;
+        createWindowHandler.name = "";
+        createWindowHandler.website = "";
+        createWindowHandler.account = "";
+        createWindowHandler.email = "";
+        createWindowHandler.phone = "";
+        createWindowHandler.password = "";
     }
 
     //编辑窗口
